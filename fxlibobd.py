@@ -1,8 +1,8 @@
-"""
+'''
 OBD software using pip obd library
 This library need to convert data to usable (string to integer).
 JSO 2017/10
-"""
+'''
 from threading import Thread
 import time
 
@@ -13,7 +13,7 @@ class fxlibOBD(Thread):
     #global connection 
      
     def __init__(self):
-        self.speed_value = 0
+        self.speed_value = 0 #SPEED
         self.speed_unit = '-'
         self.airTemp_value = 0 #AMBIANT_AIR_TEMP
         self.airTemp_unit = '-'
@@ -27,6 +27,11 @@ class fxlibOBD(Thread):
         self.pressure_unit = '-'
         self.voltage_value = 0 #CONTROL_MODULE_VOLTAGE
         self.voltage_unit = '-'
+        self.rpm_value = 0 #RPM
+        self.rpm_unit = '-'
+        self.conso_value = 0 #FUEL_RATE
+        self.conso_unit = '-'
+        self.carerror = None
         self.connection = False
         self._active = False
         
@@ -44,11 +49,11 @@ class fxlibOBD(Thread):
     #end run
     
     def stop(self):
-        """Stop the thread"""
+        '''Stop the thread'''
         self._active = False
     
     def connect(self, port='/dev/ttyUSB0'):
-        """Permit to connect to the OBD interface"""
+        '''Permit to connect to the OBD interface'''
         #connection = obd.OBD() # auto-connects to USB or RF port
         self.connection = obd.OBD(port)
     #end connect
@@ -58,7 +63,7 @@ class fxlibOBD(Thread):
     #end is_connected
     
     def reconnect(self):
-            """Reconnect the OBD interface on multiple timeout answer"""
+            '''Reconnect the OBD interface on multiple timeout answer'''
             #Run the low level ATZ command. Possibility to use the serial object ?
             
     #end reconnect
@@ -68,7 +73,7 @@ class fxlibOBD(Thread):
     #end close
     
     def get_speed(self):
-        """This function ask for current speed. """
+        '''This function ask for current speed. '''
         if (self.connection.is_connected()):
             cmd = obd.commands.SPEED # select an OBD command (sensor)
             self.cmd_resp = self.connection.query(cmd) # send the command, and parse the response
@@ -117,8 +122,32 @@ class fxlibOBD(Thread):
             (self.intakeTemp_value, self.intakeTemp_unit) = self.response_split(self.cmd_resp)
     #end get_intake_temp
     
+    def get_rpm(self):
+        '''This function ask for current RPM. '''
+        if (self.connection.is_connected()):
+            cmd = obd.commands.RPM # select an OBD command (sensor)
+            self.cmd_resp = self.connection.query(cmd) # send the command, and parse the response
+            (self.rpm_value, self.rpm_unit) = self.response_split(self.cmd_resp)
+    #end get_rpm
+
+    def get_conso(self):
+        '''This function ask for consumption. '''
+        ''' TODO debug the response '''
+        if (self.connection.is_connected()):
+            cmd = obd.commands.FUEL_RATE # select an OBD command (sensor)
+            self.cmd_resp = self.connection.query(cmd) # send the command, and parse the response
+            #(self.conso_value, self.conso_unit) = self.response_split(self.cmd_resp)
+            self.conso.value = self.cmd.resp
+    #end get_conso
+    
+    def get_carerror(self):
+        '''Get the vehicule error codes.'''
+        if(self.connection.is_connected()):
+            cmd = obd.commands.GET_DTC
+            self.carerror = self.connection.query(cmd)
+    
     def response_split(self, response):
-        """Split the OBD response to Value, Unit tuple."""
+        '''Split the OBD response to Value, Unit tuple.'''
         response_str = str(response)
         response_value = response_str.split(' ')[0]
         response_unit = response_str.split(' ')[1]
@@ -126,12 +155,16 @@ class fxlibOBD(Thread):
     #end response_split
     
     def askinfo(self):
-        """this function collect all OBD informations"""
+        '''this function collect all OBD informations'''
         self.get_speed()
+        self.get_rpm()
         self.get_air_temp()
         self.get_cool_temp()
         self.get_oil_temp()
-        #self.get_voltage()
+        self.get_intake_temp()
+        self.get_pressure()
+        #self.get_conso()
+        self.get_voltage()
         self.get_pressure()
     #end askinfo
 #end fxOBD
