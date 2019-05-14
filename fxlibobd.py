@@ -36,7 +36,7 @@ class fxlibOBD(Thread):
         self._active = False
         
         Thread.__init__(self)
-    #end init
+    #end ___init___
     
     def run(self):
         '''Threading actions'''
@@ -63,9 +63,8 @@ class fxlibOBD(Thread):
     #end is_connected
     
     def reconnect(self):
-            '''Reconnect the OBD interface on multiple timeout answer'''
-            #Run the low level ATZ command. Possibility to use the serial object ?
-            
+        '''Reconnect the OBD interface on multiple timeout answer'''
+        #Run the low level ATZ command. Possibility to use the serial object ?
     #end reconnect
     
     def obdclose(self):

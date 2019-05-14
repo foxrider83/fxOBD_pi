@@ -26,7 +26,8 @@ class MeterTemp(tk.Canvas):
         self.createhand()
         
         self.setrange()
-        
+    #end __init__
+
     def layoutparams(self):
         # set parameters that control the layout
         height = int(self['height'])
@@ -58,9 +59,10 @@ class MeterTemp(tk.Canvas):
         self.minortick = self.majortick/2
         self.handlen = self.radius - self.majortick - self.bezel - 1
         self.blobrad = self.handlen/6
-             
+    #end layoutparams
+
     def graphics(self):
-        """ create the static components """
+        ''' create the static components '''
         self.create_oval(self.centrex-self.radius
         ,self.centrey-self.radius
         ,self.centrex+self.radius
@@ -87,7 +89,8 @@ class MeterTemp(tk.Canvas):
             #val = deg - self.start
             val = ''
             self.createunit(deg, unit = str(val), color = 'yellow')
-        
+        #end graphics
+
     def createhand(self):
         # create text display
         self.textid = self.create_text(self.centrex
@@ -112,7 +115,8 @@ class MeterTemp(tk.Canvas):
         ,self.centrex + self.blobrad
         ,self.centrey + self.blobrad
         ,outline = 'black', fill = 'black')
-        
+    #end createhand
+
     def createtick(self,angle,length, color = 'black'):
         # helper function to create one tick
         rad = math.radians(angle)
@@ -124,7 +128,8 @@ class MeterTemp(tk.Canvas):
         ,self.centrex - (radius - length)*cos
         ,self.centrey - (radius - length)*sin
         ,width = self.linewidth, fill = color)
-        
+    #end createtick
+
     def createunit(self,angle,unit, color = 'black'):
         # helper function to create one tick
         rad = math.radians(angle)
@@ -134,11 +139,13 @@ class MeterTemp(tk.Canvas):
         self.create_text(self.centrex - (radius - 15)*cos
         ,self.centrey - (radius - 15)*sin
         ,width = self.linewidth, fill = color, text = unit)
-    
+    #end createunit
+
     def setrange(self,start = 0, end=100):
         self.start = start
         self.range = end - start
         #print('start %s, range %s' % (self.start, self.range))
+    #end setrange
         
     def set(self,valueOil, valueCool, valueAmb):
         # call this to set the hand
@@ -166,15 +173,17 @@ class MeterTemp(tk.Canvas):
         ,self.centrex+self.handlen*math.cos(radOil), self.centrey+self.handlen*math.sin(radOil))
         self.coords(self.handidCool,self.centrex,self.centrey
         ,self.centrex+self.handlen*math.cos(radCool), self.centrey+self.handlen*math.sin(radCool))
-        
+    #end set
+
     def blob(self,colour):
         # call this to change the colour of the blob
         self.itemconfigure(self.blobid,fill = colour,outline = colour)
+    #end blob
 
 class Meterframe(tk.Frame):
     #define global variables.
     
-    """Create the frame object"""
+    '''Create the frame object'''
     def __init__(self,master,text = '',scale=(0,100),defaultfont = ('Courier', 12),*args,**kwargs):
         rootframe = tk.Frame.__init__(self,master,*args,**kwargs)
 
@@ -189,12 +198,13 @@ class Meterframe(tk.Frame):
         tk.Label(self,text=text, font = defaultfont).pack()
         self.setmeter(0 ,0, 0)
 
-        """tk.Scale(self,length = width,from_ = scale[0], to = scale[1]
+        '''tk.Scale(self,length = width,from_ = scale[0], to = scale[1]
         ,orient = tk.HORIZONTAL
-        ,command = self.setmeter).pack()"""
+        ,command = self.setmeter).pack()'''
+    #end __init__
 
     def setmeter(self,valueOil = 30, valueCool = 40, valueAmb = 20):
-        """ Modify the value, change the blob color depend on the value."""
+        ''' Modify the value, change the blob color depend on the value.'''
         self.meter.set(valueOil, valueCool, valueAmb)
         plage = self.scalemax - self.scalemin
         #Debug print
@@ -208,4 +218,5 @@ class Meterframe(tk.Frame):
             self.meter.blob('red')
             
         #self.after(1000, self.setmeter)
- 
+    #end setmeter
+
