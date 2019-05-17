@@ -7,15 +7,24 @@ Final software for Pi Car Computer
 written by Jeff Salvo
 '''
 
+'''
+TODO : Ajouter l'affichage du nombre d'erreur
+En faire un bouton
+Lorsque l'on sélectionne ce bouton, afficher la lister des erreurs. 
+La méthode avec un dialog box n'est pas bonne car elle utilise le theme du bureau.
+Ajouter une fenêtre
+'''
+
 from sys import version_info
 if version_info[0] < 3:
     import Tkinter as tk
+    from Tkinter.messagebox import *
 else:
     import tkinter as tk
+    from tkinter.messagebox import *
 
 import sys
 import argparse
-#import tkFont
 from os import system
 import fxmeter as m
 import random
@@ -93,6 +102,9 @@ class Mainframe(tk.Frame):
         lblrpm.grid(row = 3, column = 1, sticky = 'E')
         #self.lblConso = tk.StringVar()
         #tk.Label(self.frmR1C1, textvariable = self.lblConso, font = ('Courier', 12)).grid(row = 5, column = 0)
+        btnerr = tk.Button(self.frmR1C1, text = 'OBD errors', command = self.showObdErr, font = valuefont)
+        #btnerr = tk.Button(self.frmR1C1, text = 'OBD errors', command = showObdError, font = valuefont)
+        btnerr.grid(row = 4, column = 0, columnspan = 2)
         
         self.frmR2C1 = tk.Frame(self)
         self.frmR2C1.grid(row = 2, column = 1)
@@ -178,7 +190,23 @@ class Mainframe(tk.Frame):
         #print('Destroy master')
         self.master.destroy()
     #end stop
+    
+    def showObdErr(self):
+        #showinfo('OBD errors', 'no OBD errors')
+        showObdError(self).pack()
+        
 #end Mainframe
+
+class showObdError(tk.Toplevel):
+    def __init__(self, *args, **kwargs):
+        tk.Toplevel().__init__(self)
+        self.btnQuit2 = tk.Button(self, text='Back', command=self.stop)
+        self.btnQuit2.pack()
+        self.pack()
+        
+    def stop(self):
+        #self.winfo_toplevel().quit()
+        self.destroy()
 
 class App(tk.Tk):
     def __init__(self):
