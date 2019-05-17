@@ -165,5 +165,6 @@ class fxlibOBD(Thread):
         #self.get_conso()
         self.get_voltage()
         self.get_pressure()
+        #self.get_carerror()
     #end askinfo
 #end fxOBD
