@@ -21,7 +21,7 @@ if version_info[0] < 3:
     from Tkinter.messagebox import *
 else:
     import tkinter as tk
-    from tkinter.messagebox import *
+    #from tkinter.messagebox import *
 
 import sys
 import argparse
@@ -36,6 +36,7 @@ import fxlibobd
 #Global variable declaratioin space
 debugmode = False
 fullscreen = False
+tactil = False
 
 
 class Mainframe(tk.Frame):
@@ -212,7 +213,8 @@ class App(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         self.title('fxCarPi - New Car Computer')
-        self.config(cursor = 'none')
+        if tactil:
+            self.config(cursor = 'none')
         #self.geometry('400x319+1+1')
         #default_font = tkFont.nametofont('TkDefaultFont')
         default_font = tk.font.nametofont('TkDefaultFont')
@@ -221,7 +223,6 @@ class App(tk.Tk):
         self.tk_setPalette(background='#000000', foreground='green2',
                             activeBackground='green2', activeForeground='#000000')
         if fullscreen:
-            #Not working
             self.attributes('-fullscreen', True)
         Mainframe(self).pack()
 #end App
@@ -236,12 +237,14 @@ if (__name__ == '__main__'):
     parser.add_argument('-l', '--log', action = 'store_true', help = 'active le mode log')
     parser.add_argument('-d', '--debug', action='store_true', help='debug mode')
     parser.add_argument('-f', '--fullscreen', action='store_true', help='fullscreen mode')
+    parser.add_argument('-t', '--tactil', action='store_true', help='tactil mode,no cursor')
     args = parser.parse_args()
     #Set software configuration
     if args.debug:
         debugmode = True
     if args.fullscreen:
         fullscreen = True
-        
+    if args.tactil:
+        tactil = True
     sys.exit(main())
 #end if
