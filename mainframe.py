@@ -182,3 +182,14 @@ class Mainframe(tk.Frame):
         showObdError(self).pack()
         
 #end Mainframe
+
+class showObdError(tk.Toplevel):
+    def __init__(self, *args, **kwargs):
+        tk.Toplevel().__init__(self)
+        self.btnQuit2 = tk.Button(self, text='Back', command=self.stop)
+        self.btnQuit2.pack()
+        self.pack()
+        
+    def stop(self):
+        #self.winfo_toplevel().quit()
+        self.destroy()

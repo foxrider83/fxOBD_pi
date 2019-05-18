@@ -39,18 +39,6 @@ debugmode = False
 fullscreen = False
 tactil = False
 
-
-class showObdError(tk.Toplevel):
-    def __init__(self, *args, **kwargs):
-        tk.Toplevel().__init__(self)
-        self.btnQuit2 = tk.Button(self, text='Back', command=self.stop)
-        self.btnQuit2.pack()
-        self.pack()
-        
-    def stop(self):
-        #self.winfo_toplevel().quit()
-        self.destroy()
-
 class App(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
