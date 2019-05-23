@@ -87,16 +87,35 @@ def main():
     print('Selectionner le port a utiliser.')
     print(ports[0][0])
     lecteur.open(ports[0][0])
-    print('Envoie de la commande ATI')
-    lecteur.write_serial('ATI')
+    #Reset all
+    print('sending reset comand')
+    lecteur.write_serial('ATZ')
     lecteur.read_serial()
-    print('Envoie de la commande ATRV')
+    #Read the ELM version
+    #print('Sending command ATI')
+    #lecteur.write_serial('ATI')
+    #lecteur.read_serial()
+    #Read ELM327 Voltage
+    print('Sending command ATRV')
     lecteur.write_serial('ATRV')
     lecteur.read_serial()
-    print('Envoie de la commande ATSP0')
+    #Remove Echo
+    print('Sending command ATE0')
+    lecteur.write_serial('ATE0')
+    lecteur.read_serial()
+    #Enable headers
+    print('sending command ATH1')
+    lecteur.write_serial('ATH1')
+    lecteur.read_serial()
+    #Disable LF after CR
+    lecteur.write_serial('ATL0')
+    lecteur.read_serial()
+    #Automatic protocol selection
+    print('Sending command ATSP0')
     lecteur.write_serial('ATSP0')
     lecteur.read_serial()
-    print('Envoie de la commande ATMA')
+    #Monitor all command
+    print('Sending command ATMA')
     lecteur.write_serial('ATMA')
     while(1):
         lecteur.read_serial()
