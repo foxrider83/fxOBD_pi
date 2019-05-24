@@ -29,7 +29,8 @@ class Mainframe(tk.Frame):
         #self._fg_lbl = '#FFFEFF'
         self._bg = '#000000'
         self._lum = 1.0 #luminosity variable
-        valuefont = ('Courier', 12) 
+        valuefont = ('Courier', 12)
+        self._errtxt ="0" 
         
         #OBD part
         self.jobd = fxlibobd.fxlibOBD()
@@ -86,8 +87,8 @@ class Mainframe(tk.Frame):
         lblrpm.grid(row = 3, column = 1, sticky = 'E')
         #self.lblConso = tk.StringVar()
         #tk.Label(self.frmR1C1, textvariable = self.lblConso, font = ('Courier', 12)).grid(row = 5, column = 0)
-        btnerr = tk.Button(self.frmR1C1, text = 'OBD errors', command = self.showObdErr, font = valuefont)
-        #btnerr = tk.Button(self.frmR1C1, text = 'OBD errors', command = showObdError, font = valuefont)
+        self.lblbtnerr = tk.StringVar()
+        btnerr = tk.Button(self.frmR1C1, textvariable = self.lblbtnerr, command = self.showObdErr, font = valuefont)
         btnerr.grid(row = 4, column = 0, columnspan = 2)
         
         self.frmR2C1 = tk.Frame(self)
@@ -119,12 +120,18 @@ class Mainframe(tk.Frame):
             self.lblTemp.set('%s %s' % (self.jobd.airTemp_value, self.jobd.airTemp_unit))
             #self.lblConso.set('%s %s' % (self.jobd.conso_value, self.jobd.conso_unit))
             #print('%s %s %s' % (valOil, valCool, valAmb))
-            
+
             date = datetime.datetime.now()
             #self.lblDate.set('%s' % (date.isoformat()))
             self.lblDate.set('%s' % (date.strftime('%d/%m/%Y\n%H:%M')))
+            if (self.jobd.numerror == 0):
+                self.lblbtnerr.set('no OBD errors')
+            else:
+                self.lblbtnerr.set('%s OBD errors'%(self.jobd.numerror))
+            
             time.sleep(2)
     #end updateValues
+    
     def setdebugmode(self, value):
         self._debugmode = value
         
@@ -179,17 +186,18 @@ class Mainframe(tk.Frame):
     
     def showObdErr(self):
         #showinfo('OBD errors', 'no OBD errors')
-        showObdError(self).pack()
+        showObdError()
         
 #end Mainframe
 
-class showObdError(tk.Toplevel):
+class showObdError():
     def __init__(self, *args, **kwargs):
-        tk.Toplevel().__init__(self)
-        self.btnQuit2 = tk.Button(self, text='Back', command=self.stop)
-        self.btnQuit2.pack()
-        self.pack()
+        self.errform = tk.Toplevel()
+        
+        self.btnQuit = tk.Button(self.errform, text='Back', command=self.stop)
+        self.btnQuit.pack()
+        #self.errform.transient()
+        self.errform.attributes('-fullscreen', True)
         
     def stop(self):
-        #self.winfo_toplevel().quit()
-        self.destroy()
+        self.errform.destroy()

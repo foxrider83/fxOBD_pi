@@ -34,7 +34,7 @@ import argparse
 #import fxlibobd
 import mainframe
 
-#Global variable declaratioin space
+#Global variable declaration space
 debugmode = False
 fullscreen = False
 tactil = False
