@@ -20,6 +20,8 @@ import datetime
 import random
 from os import system
 
+#Global variable declaration
+jobd = fxlibobd.fxlibOBD()
 
 class Mainframe(tk.Frame):
     
@@ -33,10 +35,13 @@ class Mainframe(tk.Frame):
         self._errtxt ="0" 
         
         #OBD part
-        self.jobd = fxlibobd.fxlibOBD()
+        #self.jobd = fxlibobd.fxlibOBD()
         try:
-            self.jobd.connect()
-            self.jobd.start()
+            jobd.connect()
+            jobd.start()
+            #display protocol id/name for debug. Good information to be displayed on OBD page ?
+            print('%s / %s'%(jobd.connection.protocol_id(), jobd.connection.protocol_name()))
+            jobd.get_carerror()
         finally:
             pass
         
@@ -108,31 +113,31 @@ class Mainframe(tk.Frame):
                 valCool = random.randint(30,120)
                 valInTemp = random.randint(-30,50)
             else:
-                valOil = self.jobd.oilTemp_value
-                valCool = self.jobd.coolTemp_value
-                valInTemp = self.jobd.intakeTemp_value
+                valOil = jobd.oilTemp_value
+                valCool = jobd.coolTemp_value
+                valInTemp = jobd.intakeTemp_value
 
             #Update the IHM.
             self.tempframe.setmeter(int(valOil), int(valCool), int(valInTemp))
             #Update labels values
-            self.lblRPM.set('%s' % (self.jobd.rpm_value))
-            self.lblSpeed.set('%s %s' % (self.jobd.speed_value, self.jobd.speed_unit))
-            if(self.jobd.pressure_unit == 'kilopascal'):
-                self.lblPressure.set('%s kPa' % (self.jobd.pressure_value))
+            self.lblRPM.set('%s' % (jobd.rpm_value))
+            self.lblSpeed.set('%s %s' % (jobd.speed_value, jobd.speed_unit))
+            if(jobd.pressure_unit == 'kilopascal'):
+                self.lblPressure.set('%s kPa' % (jobd.pressure_value))
             else:
-                self.lblPressure.set('%s %s' % (self.jobd.pressure_value, self.jobd.pressure_unit))
-            self.lblTemp.set('%s %s' % (self.jobd.airTemp_value, self.jobd.airTemp_unit))
+                self.lblPressure.set('%s %s' % (jobd.pressure_value, jobd.pressure_unit))
+            self.lblTemp.set('%s %s' % (jobd.airTemp_value, jobd.airTemp_unit))
             #self.lblConso.set('%s %s' % (self.jobd.conso_value, self.jobd.conso_unit))
             #print('%s %s %s' % (valOil, valCool, valAmb))
 
             date = datetime.datetime.now()
             #self.lblDate.set('%s' % (date.isoformat()))
             self.lblDate.set('%s' % (date.strftime('%d/%m/%Y\n%H:%M')))
-
-            if (self.jobd.numerror == 0):
+            print('errors count : %s'%(jobd.errorcount))
+            if (jobd.errorcount == 0):
                 self.lblbtnerr.set('no OBD errors')
             else:
-                self.lblbtnerr.set('%s OBD errors'%(self.jobd.numerror))
+                self.lblbtnerr.set('%s OBD errors'%(jobd.errorcount))
             time.sleep(2)
             
     #end updateValues
@@ -173,13 +178,13 @@ class Mainframe(tk.Frame):
         #print('bye bye')
         try:
             #Stop the thread
-            self.jobd.stop()
+            jobd.stop()
             #print('OBD thread stopped')
             #wait the end of the thread
-            self.jobd.join()
+            jobd.join()
             #print('OBD thread joined')
             #close OBD connection
-            self.jobd.obdclose()
+            jobd.obdclose()
             #print('Closing OBD connection')
         #end try
         except:
@@ -198,11 +203,21 @@ class Mainframe(tk.Frame):
 class showObdError():
     def __init__(self, *args, **kwargs):
         self.errform = tk.Toplevel()
-        
+        i = 0
+        try:
+            jobd.get_carerror()
+            for err in jobd.carerror.value:
+                lb = tk.Label(self.errform, text = err[1])
+                lb.grid(row = i, column = 0)
+                label[err] = lb
+                i += 1
+        except:
+            pass
         self.btnQuit = tk.Button(self.errform, text='Back', command=self.stop)
         self.btnQuit.pack()
         #self.errform.transient()
-        self.errform.attributes('-fullscreen', True)
+        if fullscreen:
+            self.errform.attributes('-fullscreen', True)
         
     def stop(self):
         self.errform.destroy()

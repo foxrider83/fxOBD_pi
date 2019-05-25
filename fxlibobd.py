@@ -32,7 +32,7 @@ class fxlibOBD(Thread):
         self.conso_value = 0 #FUEL_RATE
         self.conso_unit = '-'
         self.carerror = None
-        self.numerror = 0 #number of OBD error
+        self.errorcount = 0 #number of OBD error
         self.connection = False
         self._active = False
         self.comerr = False
@@ -61,7 +61,8 @@ class fxlibOBD(Thread):
     #end connect
     
     def is_connected(self):
-        return self.connection.is_connected()
+        return self.connection.CAR_CONNECTED
+        #return self.connection.is_connected()
     #end is_connected
     
     def reconnect(self):
@@ -146,11 +147,13 @@ class fxlibOBD(Thread):
         if(self.connection.is_connected()):
             cmd = obd.commands.GET_DTC
             self.carerror = self.connection.query(cmd)
+            #print('%s'%(self.carerror.value))
             try:
-                self.numerror = len(self.carerror)
+                self.errorcount = len(self.carerror.value)
             except:
-                self.numerror = 0
+                self.errorcount = 0
                 pass
+    #end get_carerror
     
     def response_split(self, response):
         '''Split the OBD response to Value, Unit tuple.'''
@@ -179,6 +182,6 @@ class fxlibOBD(Thread):
         #self.get_conso()
         self.get_voltage()
         self.get_pressure()
-        self.get_carerror()
+        #self.get_carerror()
     #end askinfo
 #end fxOBD

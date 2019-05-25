@@ -23,15 +23,16 @@ def main():
         response = connection.query(cmd)
         print('Ambiant air : %s'%(response.value))
         
-        cmd = obd.commands.FUEL_TYPE
-        response = connection.query(cmd)
-        print('Fuel type : %s'%(response.value))
+        #cmd = obd.commands.FUEL_TYPE
+        #response = connection.query(cmd)
+        #print('Fuel type : %s'%(response.value))
         
         #cmd = obd.commands.ENGINE_LOAD
         cmd = obd.commands.GET_DTC
         response = connection.query(cmd)
         print(response.value)
-        print(type(response))
+        print('nbre d\'erreurs : %s'%(len(response.value)))
+        #print(type(response))
 
         if (connection.is_connected()):
             connection.close()
