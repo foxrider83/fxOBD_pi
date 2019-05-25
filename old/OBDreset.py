@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding : UTF-8 -*-
 '''
 Reset OBD via ATZ serial command
@@ -63,8 +63,8 @@ class ReceptionSerie():
         Read serial port and store the result to the messagerecu attribute.
         '''
         if self.__port.isOpen():
-            #self.messagerecu = self.__port.readline()
-            self.messagerecu = self.__port.read(32)
+            self.messagerecu = self.__port.readline()
+            #self.messagerecu = self.__port.read(32)
             print(self.messagerecu)
         else:
             print("Port not open.")
@@ -118,8 +118,6 @@ def main():
     print("Selectionner le port a utiliser.")
     print(ports[0][0])
     lecteur.open(ports[0][0])
-    lecteur.flushRX()
-    lecteur.flushTX()
     print("Envoie des commandes")
     lecteur.write_serial("ATZ")
     time.sleep(1)

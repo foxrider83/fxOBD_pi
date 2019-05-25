@@ -111,12 +111,16 @@ class Mainframe(tk.Frame):
                 valOil = self.jobd.oilTemp_value
                 valCool = self.jobd.coolTemp_value
                 valInTemp = self.jobd.intakeTemp_value
+
             #Update the IHM.
             self.tempframe.setmeter(int(valOil), int(valCool), int(valInTemp))
             #Update labels values
             self.lblRPM.set('%s' % (self.jobd.rpm_value))
             self.lblSpeed.set('%s %s' % (self.jobd.speed_value, self.jobd.speed_unit))
-            self.lblPressure.set('%s %s' % (self.jobd.pressure_value, self.jobd.pressure_unit))
+            if(self.jobd.pressure_unit == 'kilopascal'):
+                self.lblPressure.set('%s kPa' % (self.jobd.pressure_value))
+            else:
+                self.lblPressure.set('%s %s' % (self.jobd.pressure_value, self.jobd.pressure_unit))
             self.lblTemp.set('%s %s' % (self.jobd.airTemp_value, self.jobd.airTemp_unit))
             #self.lblConso.set('%s %s' % (self.jobd.conso_value, self.jobd.conso_unit))
             #print('%s %s %s' % (valOil, valCool, valAmb))
@@ -124,12 +128,13 @@ class Mainframe(tk.Frame):
             date = datetime.datetime.now()
             #self.lblDate.set('%s' % (date.isoformat()))
             self.lblDate.set('%s' % (date.strftime('%d/%m/%Y\n%H:%M')))
+
             if (self.jobd.numerror == 0):
                 self.lblbtnerr.set('no OBD errors')
             else:
                 self.lblbtnerr.set('%s OBD errors'%(self.jobd.numerror))
-            
             time.sleep(2)
+            
     #end updateValues
     
     def setdebugmode(self, value):

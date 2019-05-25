@@ -35,6 +35,7 @@ class fxlibOBD(Thread):
         self.numerror = 0 #number of OBD error
         self.connection = False
         self._active = False
+        self.comerr = False
         
         Thread.__init__(self)
     #end ___init___
@@ -145,13 +146,24 @@ class fxlibOBD(Thread):
         if(self.connection.is_connected()):
             cmd = obd.commands.GET_DTC
             self.carerror = self.connection.query(cmd)
-            self.numerror = len(self.carerror)
+            try:
+                self.numerror = len(self.carerror)
+            except:
+                self.numerror = 0
+                pass
     
     def response_split(self, response):
         '''Split the OBD response to Value, Unit tuple.'''
-        response_str = str(response)
-        response_value = response_str.split(' ')[0]
-        response_unit = response_str.split(' ')[1]
+        try:
+            response_str = str(response)
+            response_value = response_str.split(' ')[0]
+            response_unit = response_str.split(' ')[1]
+            self.comerr = False
+        except:
+            response_value = 0
+            response_unit = '-'
+            self.comerr = True
+            pass
         return (response_value, response_unit)
     #end response_split
     

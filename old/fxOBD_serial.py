@@ -3,8 +3,8 @@
 #Programme de test sur les ports serie
 #JSO - 27/03/2017
 
+import sys
 try:
-    import sys
     import serial
     import serial.tools.list_ports
 except ImportError:
@@ -15,7 +15,6 @@ except ImportError:
 
 #### Definition de la classe local ####
 class ReceptionSerie():
-    
     def __init__(self):
         #Attriute declaration
         self.status = 0
