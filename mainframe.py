@@ -27,6 +27,7 @@ class Mainframe(tk.Frame):
     
     def __init__(self,master,*args,**kwargs):
         self._debugmode = False
+        self._screenmode = False
         self._fg_val = 'white'
         #self._fg_lbl = '#FFFEFF'
         self._bg = '#000000'
@@ -149,6 +150,9 @@ class Mainframe(tk.Frame):
     
     def setdebugmode(self, value):
         self._debugmode = value
+    
+    def setscreenmode(self, value):
+        self._screenmode = value
         
     def lumPlus(self):
         if self._lum < 1.0:
@@ -201,16 +205,20 @@ class Mainframe(tk.Frame):
     
     def showObdErr(self):
         #showinfo('OBD errors', 'no OBD errors')
-        showObdError()
+        errform = showObdError()
+        errform.setScreenMode(self._screenmode)
         
 #end Mainframe
 
 class showObdError():
+    fullscreen = False
     def __init__(self, *args, **kwargs):
         self.errform = tk.Toplevel()
         i = 0
         try:
-            jobd.get_carerror()
+            #jobd.get_carerror()
+            if (jobd.errorcount == 0):
+                lb = tk.Label(self.errform, text = 'No problem,\n Have a nice trip')
             for err in jobd.carerror.value:
                 lb = tk.Label(self.errform, text = err[1])
                 lb.grid(row = i, column = 0)
@@ -221,8 +229,14 @@ class showObdError():
         self.btnQuit = tk.Button(self.errform, text='Back', command=self.stop)
         self.btnQuit.pack()
         #self.errform.transient()
-        if fullscreen:
+    
+    def setScreenMode(self, value):
+        print('Fullscreen mode %s'%(value))
+        if value:
             self.errform.attributes('-fullscreen', True)
-        
+    #end setScreenMode
+    
     def stop(self):
         self.errform.destroy()
+    #end stop
+    
