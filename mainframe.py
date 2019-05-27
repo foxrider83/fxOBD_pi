@@ -41,7 +41,7 @@ class Mainframe(tk.Frame):
             jobd.start()
             #display protocol id/name for debug. Good information to be displayed on OBD page ?
             print('%s / %s'%(jobd.connection.protocol_id(), jobd.connection.protocol_name()))
-            jobd.get_carerror()
+            #jobd.get_carerror()
         finally:
             pass
         
@@ -54,9 +54,13 @@ class Mainframe(tk.Frame):
         self.frmR2C0 = tk.Frame(self)
         self.frmR2C0.grid(row = 2, column = 0)
         #Luminosity buttons placement.
-        tk.Button(self.frmR2C0, text ='Lum-', command = self.lumMin, font = valuefont).pack(side = 'left')
-        tk.Button(self.frmR2C0, text ='D/N', command = self.lumAlt, font = valuefont).pack(side = 'left')
-        tk.Button(self.frmR2C0, text ='Lum+', command = self.lumPlus, font = valuefont).pack(side = 'left')
+        #tk.Button(self.frmR2C0, text ='Lum-', command = self.lumMin, font = valuefont).pack(side = 'left')
+        #tk.Button(self.frmR2C0, text ='D/N', command = self.lumAlt, font = valuefont).pack(side = 'left')
+        #tk.Button(self.frmR2C0, text ='Lum+', command = self.lumPlus, font = valuefont).pack(side = 'left')
+        #OBD errors
+        self.lblbtnerr = tk.StringVar()
+        btnerr = tk.Button(self.frmR2C0, textvariable = self.lblbtnerr, command = self.showObdErr, font = valuefont)
+        btnerr.grid()
         
         #self.lmbtnframe = tk.Frame(self.leftframe)
         #self.lmbtnframe.grid(row = 0, column = 0, sticky = 'N', pady = 10)
@@ -71,30 +75,31 @@ class Mainframe(tk.Frame):
         self.frmR1C1 = tk.Frame(self)
         self.frmR1C1.grid(row = 1, column = 1, sticky = 'NW')
         
-        tk.Label(self.frmR1C1, text = 'Ext Temp').grid(row = 0, column = 0, sticky = 'W')
+        tk.Label(self.frmR1C1, text = 'Ext Temp').grid(sticky = 'W')
         self.lblTemp = tk.StringVar()
         lblexttemp = tk.Label(self.frmR1C1, textvariable = self.lblTemp, fg = self._fg_val)
-        lblexttemp.grid(row = 0, column = 1, sticky = 'E')
+        lblexttemp.grid(sticky = 'E')
         
-        tk.Label(self.frmR1C1, text = 'Speed').grid(row = 1, column = 0, sticky = 'W')
+        tk.Label(self.frmR1C1, text = 'Speed').grid(sticky = 'W')
         self.lblSpeed = tk.StringVar()
         lblspeed = tk.Label(self.frmR1C1, textvariable = self.lblSpeed, fg = self._fg_val)
-        lblspeed.grid(row = 1, column = 1, sticky = 'E')
+        lblspeed.grid(sticky = 'E')
         
-        tk.Label(self.frmR1C1, text = 'Pres').grid(row = 2, column = 0, sticky = 'W')
+        tk.Label(self.frmR1C1, text = 'Pres').grid(sticky = 'W')
         self.lblPressure = tk.StringVar()
         lblpressure = tk.Label(self.frmR1C1, textvariable = self.lblPressure, fg = self._fg_val)
-        lblpressure.grid(row = 2, column = 1, sticky = 'E')
+        lblpressure.grid(sticky = 'E')
         
-        tk.Label(self.frmR1C1, text = 'RPM').grid(row = 3, column = 0, sticky = 'W')
+        tk.Label(self.frmR1C1, text = 'RPM').grid(sticky = 'W')
         self.lblRPM = tk.StringVar()
         lblrpm = tk.Label(self.frmR1C1, textvariable = self.lblRPM, fg = self._fg_val)
-        lblrpm.grid(row = 3, column = 1, sticky = 'E')
+        lblrpm.grid(sticky = 'E')
         #self.lblConso = tk.StringVar()
         #tk.Label(self.frmR1C1, textvariable = self.lblConso, font = ('Courier', 12)).grid(row = 5, column = 0)
-        self.lblbtnerr = tk.StringVar()
-        btnerr = tk.Button(self.frmR1C1, textvariable = self.lblbtnerr, command = self.showObdErr, font = valuefont)
-        btnerr.grid(row = 4, column = 0, columnspan = 2)
+        #OBD errors
+        #self.lblbtnerr = tk.StringVar()
+        #btnerr = tk.Button(self.frmR1C1, textvariable = self.lblbtnerr, command = self.showObdErr, font = valuefont)
+        #btnerr.grid(columnspan = 2)
         
         self.frmR2C1 = tk.Frame(self)
         self.frmR2C1.grid(row = 2, column = 1)

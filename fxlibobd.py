@@ -43,6 +43,7 @@ class fxlibOBD(Thread):
     def run(self):
         '''Threading actions'''
         self._active = True
+        self.get_carerror()
         while(self._active):
             if (self.connection.is_connected()):
                 self.askinfo()
