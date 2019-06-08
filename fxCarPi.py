@@ -48,14 +48,16 @@ class App(tk.Tk):
         #self.geometry('400x319+1+1')
         #default_font = tkFont.nametofont('TkDefaultFont')
         default_font = tk.font.nametofont('TkDefaultFont')
-        default_font.configure(family='courier', size='18')
+        default_font.configure(family='courier', size='16')
         self.option_add('*Font', default_font)
         self.tk_setPalette(background='#000000', foreground='green2',
                             activeBackground='green2', activeForeground='#000000')
-        if fullscreen:
-            self.attributes('-fullscreen', True)
+
         mf = mainframe.Mainframe(self)
         print('debugmode set')
+        if fullscreen:
+            self.attributes('-fullscreen', True)
+        mf.setscreenmode(fullscreen)
         mf.setdebugmode(debugmode)
         mf.pack()
 #end App
