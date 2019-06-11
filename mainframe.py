@@ -28,6 +28,7 @@ class Mainframe(tk.Frame):
     def __init__(self,master,*args,**kwargs):
         self._debugmode = False
         self._screenmode = False
+        self._tactilmode = False
         self._fg_val = 'white'
         #self._fg_lbl = '#FFFEFF'
         self._bg = '#000000'
@@ -139,7 +140,7 @@ class Mainframe(tk.Frame):
             date = datetime.datetime.now()
             #self.lblDate.set('%s' % (date.isoformat()))
             self.lblDate.set('%s' % (date.strftime('%d/%m/%Y\n%H:%M')))
-            print('errors count : %s'%(jobd.errorcount))
+            #print('errors count : %s'%(jobd.errorcount))
             if (jobd.errorcount == 0):
                 self.lblbtnerr.set('no OBD errors')
             else:
@@ -151,8 +152,9 @@ class Mainframe(tk.Frame):
     def setdebugmode(self, value):
         self._debugmode = value
     
-    def setscreenmode(self, value):
-        self._screenmode = value
+    def setscreenmode(self, fullscreen, tactil):
+        self._screenmode = fullscreen
+        self._tactilmode = tactil
         
     def lumPlus(self):
         if self._lum < 1.0:
@@ -206,34 +208,40 @@ class Mainframe(tk.Frame):
     def showObdErr(self):
         #showinfo('OBD errors', 'no OBD errors')
         errform = showObdError()
-        errform.setScreenMode(self._screenmode)
+        errform.setScreenMode(self._screenmode, self._tactilmode)
         
 #end Mainframe
 
-class showObdError():
+class showObdError(tk.Frame):
     fullscreen = False
     def __init__(self, *args, **kwargs):
         self.errform = tk.Toplevel()
+        self.errframe = tk.Frame(self.errform)
+        self.errframe.grid(row = 0, column = 0)
         i = 0
         try:
             #jobd.get_carerror()
             if (jobd.errorcount == 0):
-                lb = tk.Label(self.errform, text = 'No problem,\n Have a nice trip')
+                lb = tk.Label(self.errframe, text = 'No problem,\n Have a nice trip')
+                lb.grid(row = 0, column = 0)
             for err in jobd.carerror.value:
-                lb = tk.Label(self.errform, text = err[1])
+                lb = tk.Label(self.errframe, text = err[1])
                 lb.grid(row = i, column = 0)
                 label[err] = lb
                 i += 1
         except:
             pass
         self.btnQuit = tk.Button(self.errform, text='Back', command=self.stop)
-        self.btnQuit.pack()
+        self.btnQuit.grid(row = 1, column = 0)
         #self.errform.transient()
     
-    def setScreenMode(self, value):
-        print('Fullscreen mode %s'%(value))
-        if value:
+    def setScreenMode(self, fullmode, cursor):
+        print('Fullscreen mode %s'%(fullmode))
+        if fullmode:
             self.errform.attributes('-fullscreen', True)
+        if cursor:
+            print('Tactil mode')
+            #self.errform.attributes('-', False)
     #end setScreenMode
     
     def stop(self):
