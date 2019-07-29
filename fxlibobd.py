@@ -36,6 +36,7 @@ class fxlibOBD(Thread):
         self.connection = False
         self._active = False
         self.comerr = False
+        self._obderrcount = 0
         
         Thread.__init__(self)
     #end ___init___
@@ -173,6 +174,7 @@ class fxlibOBD(Thread):
     
     def askinfo(self):
         '''this function collect all OBD informations'''
+        self._obderrcount += 1
         self.get_speed()
         self.get_rpm()
         self.get_air_temp()
@@ -183,6 +185,8 @@ class fxlibOBD(Thread):
         #self.get_conso()
         self.get_voltage()
         self.get_pressure()
-        #self.get_carerror()
+        if (self._obderrcount > 10):
+            self._obderrcount = 0
+            self.get_carerror()
     #end askinfo
 #end fxOBD

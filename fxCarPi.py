@@ -57,7 +57,7 @@ class App(tk.Tk):
         print('debugmode set')
         if fullscreen:
             self.attributes('-fullscreen', True)
-        mf.setscreenmode(fullscreen)
+        mf.setscreenmode(fullscreen, tactil)
         mf.setdebugmode(debugmode)
         mf.pack()
 #end App
