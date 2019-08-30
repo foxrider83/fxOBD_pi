@@ -34,6 +34,8 @@ import argparse
 #import fxlibobd
 import mainframe
 
+__version__ = 1.0
+
 #Global variable declaration space
 debugmode = False
 fullscreen = False
