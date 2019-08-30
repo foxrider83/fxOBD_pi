@@ -32,8 +32,11 @@ class fxlibOBD(Thread):
         self.conso_value = 0 #FUEL_RATE
         self.conso_unit = '-'
         self.carerror = None
+        self.errorcount = 0 #number of OBD error
         self.connection = False
         self._active = False
+        self.comerr = False
+        self._obderrcount = 0
         
         Thread.__init__(self)
     #end ___init___
@@ -41,6 +44,7 @@ class fxlibOBD(Thread):
     def run(self):
         '''Threading actions'''
         self._active = True
+        self.get_carerror()
         while(self._active):
             if (self.connection.is_connected()):
                 self.askinfo()
@@ -59,7 +63,8 @@ class fxlibOBD(Thread):
     #end connect
     
     def is_connected(self):
-        return self.connection.is_connected()
+        return self.connection.CAR_CONNECTED
+        #return self.connection.is_connected()
     #end is_connected
     
     def reconnect(self):
@@ -144,17 +149,32 @@ class fxlibOBD(Thread):
         if(self.connection.is_connected()):
             cmd = obd.commands.GET_DTC
             self.carerror = self.connection.query(cmd)
+            #print('%s'%(self.carerror.value))
+            try:
+                self.errorcount = len(self.carerror.value)
+            except:
+                self.errorcount = 0
+                pass
+    #end get_carerror
     
     def response_split(self, response):
         '''Split the OBD response to Value, Unit tuple.'''
-        response_str = str(response)
-        response_value = response_str.split(' ')[0]
-        response_unit = response_str.split(' ')[1]
+        try:
+            response_str = str(response)
+            response_value = response_str.split(' ')[0]
+            response_unit = response_str.split(' ')[1]
+            self.comerr = False
+        except:
+            response_value = 0
+            response_unit = '-'
+            self.comerr = True
+            pass
         return (response_value, response_unit)
     #end response_split
     
     def askinfo(self):
         '''this function collect all OBD informations'''
+        self._obderrcount += 1
         self.get_speed()
         self.get_rpm()
         self.get_air_temp()
@@ -165,5 +185,8 @@ class fxlibOBD(Thread):
         #self.get_conso()
         self.get_voltage()
         self.get_pressure()
+        if (self._obderrcount > 10):
+            self._obderrcount = 0
+            self.get_carerror()
     #end askinfo
 #end fxOBD

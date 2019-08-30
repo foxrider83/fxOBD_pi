@@ -6,4 +6,6 @@ The gauge meter display oil and coolant temperatures.<br>
 The digital display show the intake air temperature.<br>
 
 TODO :<br>
-Read Car errors and display on an other window.<br>
+Create another window with a close button<br>
+Read Car errors<br>
+Display on an other window.<br>
