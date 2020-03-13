@@ -34,12 +34,12 @@ import argparse
 #import fxlibobd
 import mainframe
 
-__version__ = 1.0
-
 #Global variable declaration space
 debugmode = False
 fullscreen = False
 tactil = False
+verbose = False
+log = False
 
 class App(tk.Tk):
     def __init__(self):
@@ -83,5 +83,7 @@ if (__name__ == '__main__'):
         fullscreen = True
     if args.tactil:
         tactil = True
+    if args.verbose:
+        verbose = True
     sys.exit(main())
 #end if
