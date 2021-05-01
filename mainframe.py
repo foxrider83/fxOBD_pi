@@ -39,7 +39,7 @@ class Mainframe(tk.Frame):
         #OBD part
         #self.jobd = fxlibobd.fxlibOBD()
         try:
-            jobd.connect()
+            jobd.connect('/dev/ttyUSB0')
             jobd.start()
             #display protocol id/name for debug. Good information to be displayed on OBD page ?
             print('%s / %s'%(jobd.connection.protocol_id(), jobd.connection.protocol_name()))
@@ -92,10 +92,10 @@ class Mainframe(tk.Frame):
         lblpressure = tk.Label(self.frmR1C1, textvariable = self.lblPressure, fg = self._fg_val)
         lblpressure.grid(sticky = 'E')
         
-        tk.Label(self.frmR1C1, text = 'RPM').grid(sticky = 'W')
-        self.lblRPM = tk.StringVar()
-        lblrpm = tk.Label(self.frmR1C1, textvariable = self.lblRPM, fg = self._fg_val)
-        lblrpm.grid(sticky = 'E')
+        tk.Label(self.frmR1C1, text = 'MAF').grid(sticky = 'W')
+        self.lblVal4 = tk.StringVar()
+        lblval4 = tk.Label(self.frmR1C1, textvariable = self.lblVal4, fg = self._fg_val)
+        lblval4.grid(sticky = 'E')
         #self.lblConso = tk.StringVar()
         #tk.Label(self.frmR1C1, textvariable = self.lblConso, font = ('Courier', 12)).grid(row = 5, column = 0)
         #OBD errors
@@ -127,7 +127,7 @@ class Mainframe(tk.Frame):
             #Update the IHM.
             self.tempframe.setmeter(int(valOil), int(valCool), int(valInTemp))
             #Update labels values
-            self.lblRPM.set('%s' % (jobd.rpm_value))
+            self.lblVal4.set('%.2f %s' % (float(jobd.maf_value), jobd.maf_unit))
             self.lblSpeed.set('%s %s' % (jobd.speed_value, jobd.speed_unit))
             if(jobd.pressure_unit == 'kilopascal'):
                 self.lblPressure.set('%s kPa' % (jobd.pressure_value))

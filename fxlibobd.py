@@ -31,9 +31,11 @@ class fxlibOBD(Thread):
         self.rpm_unit = '-'
         self.conso_value = 0 #FUEL_RATE
         self.conso_unit = '-'
+        self.maf_value = 0 #MASS AIR FLOW
+        self.maf_unit = '-'
         self.carerror = None
         self.errorcount = 0 #number of OBD error
-        self.connection = False
+        #self.connection = None
         self._active = False
         self.comerr = False
         self._obderrcount = 0
@@ -117,6 +119,7 @@ class fxlibOBD(Thread):
             cmd = obd.commands.BAROMETRIC_PRESSURE
             self.cmd_resp = self.connection.query(cmd)
             (self.pressure_value, self.pressure_unit) = self.response_split(self.cmd_resp)
+            self.pressure_value = float(self.pressure_value)
     #end get_pressure
     
     def get_intake_temp(self):
@@ -132,6 +135,7 @@ class fxlibOBD(Thread):
             cmd = obd.commands.RPM # select an OBD command (sensor)
             self.cmd_resp = self.connection.query(cmd) # send the command, and parse the response
             (self.rpm_value, self.rpm_unit) = self.response_split(self.cmd_resp)
+            self.rpm_value = float(self.rpm_value)
     #end get_rpm
 
     def get_conso(self):
@@ -144,6 +148,15 @@ class fxlibOBD(Thread):
             self.conso.value = self.cmd.resp
     #end get_conso
     
+    def get_maf(self):
+        '''Get the MAF value'''
+        if(self.connection.is_connected()):
+            cmd = obd.commands.MAF
+            self.cmd_resp = self.connection.query(cmd)
+            (self.maf_value, self.maf_unit) = self.response_split(self.cmd_resp)
+            self.maf_value = float(self.maf_value)
+            #self.maf_value = self.cmd_response
+
     def get_carerror(self):
         '''Get the vehicule error codes.'''
         if(self.connection.is_connected()):
@@ -183,6 +196,7 @@ class fxlibOBD(Thread):
         self.get_intake_temp()
         self.get_pressure()
         #self.get_conso()
+        self.get_maf()
         self.get_voltage()
         self.get_pressure()
         if (self._obderrcount > 10):

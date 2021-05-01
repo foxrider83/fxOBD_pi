@@ -18,9 +18,9 @@ class MeterTemp(tk.Canvas):
     def __init__(self,master,*args,**kwargs):
         tk.Canvas.__init__(self,master,*args,**kwargs)
         
-        self.start = 0
-        self.stop = 100
-        
+        self._start = 0
+        self._stop = 100
+        print('demarrage start = %s'%(self._start))
         self.layoutparams()
         self.graphics()
         self.createhand()
@@ -85,10 +85,12 @@ class MeterTemp(tk.Canvas):
             self.createtick(deg,self.minortick, 'red')
         for deg in range(-60,241,30):
             self.createtick(deg,self.majortick, 'yellow')
-            #Find the good value
-            #val = deg - self.start
-            val = ''
-            self.createunit(deg, unit = str(val), color = 'yellow')
+            #rangex = self._stop - self._start
+            #A la creation, le start et stop n'ont pas les bonnes valeurs.
+            #val = ((deg + 240)*rangex/300 + self._start)/10
+            #TODO: incliner le texte en fonction de l'angle gradué
+            #self.createunit(deg, unit = str(int(val)), color = 'yellow')
+        #print('create tick start = %s'%(self._start))
         #end graphics
 
     def createhand(self):
@@ -136,29 +138,29 @@ class MeterTemp(tk.Canvas):
         cos = math.cos(rad)
         sin = math.sin(rad)
         radius = self.radius - self.bezel
-        self.create_text(self.centrex - (radius - 15)*cos
-        ,self.centrey - (radius - 15)*sin
+        self.create_text(self.centrex - (radius - 25)*cos
+        ,self.centrey - (radius - 25)*sin
         ,width = self.linewidth, fill = color, text = unit)
     #end createunit
 
     def setrange(self,start = 0, end=100):
-        self.start = start
+        self._start = start
         self.range = end - start
-        #print('start %s, range %s' % (self.start, self.range))
+        #print('start %s, range %s' % (self._start, self.range))
     #end setrange
         
     def set(self,valueOil, valueCool, valueAmb):
         # call this to set the hand
         # Need to verify is the value is in the range.
-        if (valueOil < self.start):
-            valueOil = self.start
-        if (valueCool < self.start):
-            valueCool = self.start
+        if (valueOil < self._start):
+            valueOil = self._start
+        if (valueCool < self._start):
+            valueCool = self._start
         #print('Oil %s, Cool %s, Amb %s' % (valueOil, valueCool, valueAmb))
         try:
             # convert value to range 0,100
-            degOil = 300*(int(valueOil) - self.start)/self.range - 240
-            degCool = 300*(int(valueCool) - self.start)/self.range - 240
+            degOil = 300*(int(valueOil) - self._start)/self.range - 240
+            degCool = 300*(int(valueCool) - self._start)/self.range - 240
         except TypeError as err:
             #print('%s' % err)
             degOil = 100
@@ -209,14 +211,12 @@ class Meterframe(tk.Frame):
         plage = self.scalemax - self.scalemin
         #Debug print
         #print('Cool %s ; Oil %s ; Amb %s ' % (valueCool, valueOil, valueAmb))
-        #TODO : Bug dans la couleur du Blob.
         if (valueOil < (plage)/3 + self.scalemin):
             self.meter.blob('blue')
         elif ((valueOil > (plage)/3 + self.scalemin) and (valueOil < 2*(plage)/3 + self.scalemin)):
             self.meter.blob('green')
         elif (valueOil > 2*(plage)/3 + self.scalemin):
             self.meter.blob('red')
-            
         #self.after(1000, self.setmeter)
     #end setmeter
 

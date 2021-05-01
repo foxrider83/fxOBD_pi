@@ -30,19 +30,21 @@ import argparse
 #import random
 #from threading import Thread
 #import time
-#import datetime
+import datetime
 #import fxlibobd
 import mainframe
-
-__version__ = 1.0
+import logging
 
 #Global variable declaration space
 debugmode = False
 fullscreen = False
 tactil = False
+verbose = False
+log = False
 
 class App(tk.Tk):
     def __init__(self):
+        logging.info('Démarrage de l\'application')
         tk.Tk.__init__(self)
         self.title('fxCarPi - New Car Computer')
         if tactil:
@@ -62,6 +64,7 @@ class App(tk.Tk):
         mf.setscreenmode(fullscreen, tactil)
         mf.setdebugmode(debugmode)
         mf.pack()
+        logging.info('Extinction de l\'application')
 #end App
 
 def main():
@@ -83,5 +86,19 @@ if (__name__ == '__main__'):
         fullscreen = True
     if args.tactil:
         tactil = True
+    if args.verbose:
+        verbose = True
+    logfilename = datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + '_fxcar.log'
+    logformat = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    if args.log:
+        loglevel = logging.INFO
+    else:
+        loglevel = logging.WARNING
+
+    if version_info[0] == 3 and version_info[1] >= 9:
+        logging.basicConfig(filename=logfilename, level=loglevel, format = logformat, encoding='UTF-8')
+    else:
+        logging.basicConfig(filename=logfilename, level=loglevel, format = logformat)
+    
     sys.exit(main())
 #end if
